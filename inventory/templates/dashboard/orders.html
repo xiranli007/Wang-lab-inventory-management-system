@@ -1,0 +1,93 @@
+{% extends 'partials/base.html' %} 
+{% block title %}Orders{% endblock %} 
+{% load crispy_forms_tags %} 
+{% block content %} {% include 'partials/topnav.html' %} 
+{% block head %}
+<style>
+	.button-right-margin {
+		margin-right: 20px;
+	}
+</style>
+<script>
+	function confirmationDelete(event, pk) {
+		event.preventDefault(); // prevnet the form from submitting
+		const result = confirm("Are you sure to delet this item?");
+		if (result) {
+			document.getElementById(pk).submit();
+		}
+	}
+</script>
+{% endblock %}
+<div class="row my-4">
+	<div class="col-md-4" style="margin: 20px">
+		<div class="card card-body">
+			<h5>Add to Orders</h5>
+			<hr />
+			<form method="POST">
+				{% csrf_token %} {{ form | crispy }}
+				<input class="btn btn-success btn-block" type="submit" value="Add" />
+			</form>
+		</div>
+	</div>
+	<div
+		class="col-md-6"
+		style="margin-left: 60px; margin-right: 10px; margin-top: 20px"
+	>
+		<table
+			class="table bg-white table-striped table-hover table-bordered align-middle"
+		>
+			<thead class="bg-info text-white">
+				<tr>
+					<th scope="col"></th>
+					<th scope="col">Name</th>
+					<th scope="col">Quantity</th>
+					<th scope="col">Ordered By</th>
+					<th scope="col">Ordered Date</th>
+					<th scope="col">Activity</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for order in orders %}
+				<tr>
+					<td>
+						<a
+							href="{% url 'dashboard-order-receive' order.id %}"
+							class="btn btn-success btn-sm"
+							>Received</a
+						>
+					</td>
+					<td>{{ order.name }}</td>
+					<td>{{ order.quantity }}</td>
+					<td>{{ order.staff }}</td>
+					<td>{{ order.orderedDate }}</td>
+					<td>
+						<div class="d-flex align-items-center">
+							<a
+								class="btn btn-info btn-sm button-right-margin"
+								href="{% url 'dashboard-order-edit' order.id %}"
+								>Edit</a
+							>
+							<form
+								id="delete-form-{{ order.id }}"
+								method="POST"
+								action="{% url 'dashboard-order-delete' order.id %}"
+							>
+								{% csrf_token %}
+								<button
+									class="btn btn-danger btn-sm"
+									type="button"
+									onclick="confirmationDelete(event,'delete-form-{{ order.id }}')"
+								>
+									Delete
+								</button>
+							</form>
+						</div>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock %}

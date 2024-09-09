@@ -1,0 +1,38 @@
+{% extends 'partials/base.html' %} 
+{% block title %}Edit Culture{% endblock %} 
+{% load crispy_forms_tags %} 
+{% block head%}
+<style>
+    .card-wrapper{
+        display: flex;
+        width:100%;
+        justify-content: center;
+        margin-top: 60px;
+        margin-bottom: 100px;
+
+    }
+    .order-detail-card{
+        width: 40%;
+    }
+    .btn{
+        display: flex;
+    }
+</style>
+{% endblock%}
+{% block content %}
+<div class="card-wrapper">
+    <div class='card order-detail-card'>
+        <div class="card-header bg-info text-white">Edit Culture</div>
+        <div class ='row p-3'>
+            <div class="col-md-10">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form | crispy }}
+                    <input class="btn btn-info" type="submit" value="Confirm">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'partials/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Requests{% endblock %}
+
+{% block content %}
+{% include 'partials/topnav.html' %}
+{% block head %}
+<style>
+    .button-right-margin{
+        margin-right: 10px;
+    }
+    .long-url {
+        word-wrap: break-word; /*all long word to be broken and wrap into the next line*/
+        overflow: auto;
+        max-width: 280px;
+    }
+
+</style>
+<script>
+    function confirmationDelete(event, pk){
+        event.preventDefault(); // prevnet the form from submitting
+        const result = confirm ('Are you sure to delet this item?');
+        if (result){
+            document.getElementById(pk).submit();
+        }
+    }
+</script>
+{% endblock %}
+<div class="row my-3">
+    <div class="col-md-4" style="margin: 20px;">
+        <div class="card card-body">
+            <h5>Make Request</h5>
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <input class="btn btn-success btn-block" type="submit" value="Make Request">
+            </form>
+        </div>
+    </div>
+    <div class="col-md-5 table-responsive-md" style="margin-left: 10px; margin-right: 100px; margin-top: 20px;">
+        <table class="table bg-white table-striped table-hover table-bordered align-middle">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Catelog Number</th>
+                    <th scope="col">URL</th>
+                    <th scope="col">Requested By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                <tr>
+                    <td>
+                        <a href = "{% url 'dashboard-request-order' request.id %}" class = "btn btn-success btn-sm">Ordered</a>
+                    </td>
+                    <td>{{ request.name }}</td>
+                    <td>{{ request.quantity }}</td>
+                    <td>{{ request.catelogNumber }}</td>
+                    <td class = 'long-url'>
+                        <a href = "{{ request.link }}" target="_blank">{{ request.link }}</a>
+                    </td>
+                    <td>{{ request.personRequest}}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <a class="btn btn-info btn-sm button-right-margin"
+                                href="{% url 'dashboard-request-edit' request.id %}">Edit</a>
+                            <form id = 'delete-form-{{ request.id }}' method="POST" action="{% url 'dashboard-request-delete' request.id %}">
+                                {% csrf_token %} 
+                                <button class="btn btn-danger btn-sm" type ='button' onclick = "confirmationDelete(event,'delete-form-{{ request.id }}')">Delete</button>
+                            </form>
+                            
+                        </div>  
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+{% endblock %}

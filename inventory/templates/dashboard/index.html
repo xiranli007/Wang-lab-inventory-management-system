@@ -1,0 +1,133 @@
+{% extends 'partials/base.html' %}
+{% block title %}Home Page{% endblock %}
+{% load crispy_forms_tags %}
+{% block head %}
+    <style>
+        .table-container {
+            max-width: 90%;
+            margin: 50px auto;
+            margin-left: 30px;
+            overflow: hidden;
+        }
+        .table-responsive{
+            width: 95%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table td, .table th {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table td a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .table td a:hover {
+            color: #0056b3;
+        }
+        .button-right-margin {
+		margin-right: 20px;
+	    }
+        .search-container {
+            display: flex;
+            width :95%;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+        .search-container form {
+            display: flex;
+        }
+        .search-container input {
+            max-width: 300px; /* Adjust this value as needed */
+            margin-right: 10px;
+        }
+    </style>
+    <script>
+        function confirmationDelete(event, pk) {
+            event.preventDefault(); // prevnet the form from submitting
+            const result = confirm("Are you sure to delet this item?");
+            if (result) {
+                document.getElementById(pk).submit();
+            }
+        }
+    </script>
+{% endblock%}
+{% block content %}
+{% include 'partials/topnav.html' %}
+<div class="row my-4">
+    <div class="col-md-4" style="margin: 20px">
+        <div class="card card-body">
+			<h5>Add to Collection</h5>
+			<hr />
+			<form method="POST">
+				{% csrf_token %} {{ form | crispy }}
+				<input class="btn btn-success btn-block" type="submit" value="Add" />
+			</form>
+		</div>
+    </div>
+    <div class="table-container col-md-7">
+        <div class="search-container">
+            <form method ='GET' class = 'form-inline my-2 my-lg-0'><!-- the default method for form is GET, here is just for readbility-->
+                <input type="search" name = 'q' id="searchInput" class="form-control me-2" placeholder="Search...">
+                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+            </form> 
+        </div>
+        <div class = 'table-responsive'>
+            <table class="table bg-white table-striped table-hover table-bordered align-middle">
+                <thead class="bg-info text-white">
+                    <tr>
+                        <th scope="col">Organism</th>
+                        <th scope="col">ID#</th>
+                        <th scope="col">Copy Saved </th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Isolation Source</th>
+                        <th scope="col">Received From</th>
+                        <th scope="col">Additional Info</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in collections %}
+                    <tr>
+                        <td>{{ row.organism }}</td>
+                        <td>{{ row.idNumber }}</td>
+                        <td>{{ row.copySaved }}</td>
+                        <td>{{ row.description }}</td>
+                        <td>{{ row.isolationSource }}</td>
+                        <td>{{ row.receivedFrom }}</td>
+                        <td>{{ row.additionalInfo }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <a
+                                    class="btn btn-info btn-sm button-right-margin"
+                                    href="{% url 'dashboard-culture-edit' row.id %}"
+                                    >Edit</a
+                                >
+                                <form
+                                    id="delete-form-{{ row.id }}"
+                                    method="POST"
+                                    action="{% url 'dashboard-culture-delete' row.id %}"
+                                >
+                                    {% csrf_token %}
+                                    <button
+                                        class="btn btn-danger btn-sm"
+                                        type="button"
+                                        onclick="confirmationDelete(event,'delete-form-{{ row.id }}')"
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                    {% endfor%}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+    
+{% endblock %}

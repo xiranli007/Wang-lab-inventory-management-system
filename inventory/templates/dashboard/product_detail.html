@@ -1,0 +1,74 @@
+{% extends 'partials/base.html' %}
+{% block title %}Product Details{% endblock %}
+{% block head%}
+<style>
+    .card-wrapper {
+        display: flex;
+        width:100%;
+        justify-content: center;
+        margin-top: 60px;
+    }
+    .product-detail-card {
+        width: 40%;
+    }
+    .product-info-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+   
+</style>
+
+{% endblock %}
+
+{% block content %}
+{% include 'partials/topnav.html' %}
+<div class="card-wrapper">
+    <div class="card product-detail-card">
+        <div class="card-header bg-info text-white">
+            Product Details Page
+        </div>
+        <div class="row p-3">
+            <div class="col-md-10">
+                <table class="table table-borderless product-detail-table">
+                    <div class="product-info-header">
+                        <span class="h4">Product Information</span>
+                        <a class="btn btn-info btn-sm" href="{% url 'dashboard-product-update' item.id %}">Edit</a>
+                    </div>
+                    <tbody>
+                        <tr>
+                            <th>Name:</th>
+                            <td>{{ item.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Quantity:</th>
+                            <td>{{ item.quantity }}</td>
+                        </tr>
+                        <tr>
+                            <th>Vendor:</th>
+                            <td>{{ item.vendor }}</td>
+                        </tr>
+                        <tr>
+                            <th>Catelog number:</th>
+                            <td>{{ item.catelogNumber}}</td>
+                        </tr>
+                        <tr>
+                            <th>Received By:</th>
+                            <td>{{ item.receivedBy }}</td>
+                        </tr>
+                        <tr>
+                            <th>Received Date:</th>
+                            <td>{{ item.receivedDate }}</td>
+                        </tr>
+                        <tr>
+                            <th>Storage:</th>
+                            <td>{{ item.storage }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}
